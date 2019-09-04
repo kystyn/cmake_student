@@ -10,7 +10,7 @@ int main( int argc, char *argv[] )
         if (argc != 3)
             throw "Not enough arguments";
 
-        png_toolkit testTool;
+        png_toolkit studTool;
         studTool.load(argv[1]);
 	studTool.fillHalfRed();
 	studTool.save(argv[2]);

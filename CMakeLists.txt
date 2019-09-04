@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(student)
-add_executable(${PROJECT_NAME} "test.cpp" "test.h")
+project(png_toolkit)
+add_executable(${PROJECT_NAME} "main.cpp" "png_toolkit.cpp" "png_toolkit.h"
+    "stb_image.h" "stb_image_writer.h")

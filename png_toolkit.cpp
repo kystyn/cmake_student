@@ -96,7 +96,7 @@ void png_toolkit::fillHalfRed()
             for (int x = 0; x < imgData.w * cpp; x += cpp)
             {
                 imgData.pixels[y * imgData.w * cpp + x + 0] = 255;
-                imgData.pixels[y * imgData.w * cpp + x + 1] = 0;
+                imgData.pixels[y * imgData.w * cpp + x + 1] = 102;
                 imgData.pixels[y * imgData.w * cpp   + x + 2] = 0;
             }
 }

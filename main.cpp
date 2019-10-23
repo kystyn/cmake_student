@@ -9,7 +9,7 @@ int main( int argc, char *argv[] )
     // toolkit near test images!
     try
     {
-        if (argc != 4)
+        if (argc != 3)
             throw "Not enough arguments";
 
         png_toolkit studTool;
@@ -22,19 +22,19 @@ int main( int argc, char *argv[] )
         filter::red r("Red");
         filter::threshold t("Threshold");
         filter::base::area a;
-        a.top = 0;
+
+        a.top = 2;
         a.left = 0;
         a.bottom = 1;
         a.right = 1;
+        studTool.applyFilter(r, a);
 
-        auto f = filter::base::filters.find(argv[1]);
-        if (f != filter::base::filters.end())
-            studTool.applyFilter(*(f->second), a);
-        else
-        {
-            std::cout << "Bad filter name\n";
-            return 0;
-        }
+        a.top = 0;
+        a.left = 0;
+        a.bottom = 2;
+        a.right = 2;
+        studTool.applyFilter(t, a);
+
 
         if (!studTool.save(argv[3]))
             std::cout << "Could not save picture\n";

@@ -31,7 +31,7 @@ public:
             int i = 0;
             for (int y = yStart; y <= yEnd; y++)
                 for (int x = xStart; x <= xEnd; x++)
-                    indices[i++] = (y * imgData.w + x) * cpp  + channel;
+                    indices[i++] = (y * imgData.w + x) * cpp + channel;
 
             std::sort(indices.begin(),
                       indices.begin() + (yEnd - yStart + 1) * (xEnd - xStart + 1),
@@ -52,9 +52,12 @@ public:
             if (saved == nullptr)
                 throw "No memory";
 
-            for (int i = 0; y < imgData.h / ar.bottom; y++, i++)
-                memcpy(saved + i * (imgData.w / ar.left - x),
-                       imgData.pixels + (y * imgData.w + x), imgData.w / ar.left - x);
+            int i = 0;
+            for (i = 0; y < imgData.h / ar.bottom; y++, i++)
+                memcpy(saved + i * (imgData.w / ar.right - x) * cpp,
+                       imgData.pixels + (y * imgData.w + x) * cpp, (imgData.w / ar.right - x) * cpp);
+
+            y -= i;
 
 
             for (; y < imgData.h / ar.bottom; y++) {
@@ -63,6 +66,8 @@ public:
                     for (int c = 0; c < 3; c++)
                         applyMedian(x, y, c, saved);
             }
+
+            delete []saved;
         }
     }
 };

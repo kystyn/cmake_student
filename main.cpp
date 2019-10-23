@@ -40,6 +40,9 @@ int main( int argc, char *argv[] )
             filter::base::area ar;
             ifs >> filterName >> ar;
 
+            if (filterName.empty())
+                break;
+
             auto f = filter::base::filters.find(filterName);
             if (f != filter::base::filters.end())
                 studTool.applyFilter(*(f->second), ar);

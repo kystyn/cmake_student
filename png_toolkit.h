@@ -2,16 +2,8 @@
 #define PNG_TOOLKIT_H
 
 #include <string>
-#include <map>
-//#include <memory>
-#include "stb_image.h"
-
-struct image_data
-{
-    stbi_uc *pixels;
-    int w, h;
-    int compPerPixel;
-};
+#include "base_filter.h"
+#include "image_data.h"
 
 class png_toolkit
 {
@@ -26,7 +18,10 @@ public:
     ~png_toolkit();
     bool load( std::string const &pictureName );
     bool save( std::string const &pictureName );
+    float mseDeviation( png_toolkit const &tool, Error &err,
+                        int &diffPix, filter::base::area const &ar ) const;
     image_data getPixelData( void ) const;
+    void applyFilter( filter::base &f, filter::base::area const &ar );
 
 private:
     image_data imgData;

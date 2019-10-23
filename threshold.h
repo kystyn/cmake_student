@@ -45,11 +45,12 @@ public:
 
         if (cpp == 4 || cpp == 3) {
             int y = ar.top == 0 ? 0 : imgData.h / ar.top;
-            int x = ar.left == 0 ? 0 : imgData.w / ar.left;
-            for (; y < imgData.h / ar.bottom; y++)
+            for (; y < imgData.h / ar.bottom; y++) {
+                int x = ar.left == 0 ? 0 : imgData.w / ar.left;
                 for (; x < imgData.w / ar.right; x++)
                     for (int c = 0; c < 3; c++)
                         applyMedian(x, y, c);
+            }
         }
     }
 };

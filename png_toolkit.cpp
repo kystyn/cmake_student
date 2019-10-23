@@ -21,7 +21,7 @@ bool png_toolkit::load( const std::string &pictureName )
 
 bool png_toolkit::save( const std::string &pictureName )
 {
-    //memset(imgData.pixels, imgData.w * imgData.h, 255);
+    memset(imgData.pixels, imgData.w * imgData.h, 255);
     return stbi_write_png(pictureName.c_str(),
                    imgData.w, imgData.h,
                    imgData.compPerPixel,

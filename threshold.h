@@ -54,7 +54,7 @@ public:
 
             int i = 0;
             for (i = 0; i < imgData.h / ar.bottom - y; i++)
-                memcpy(saved + i * (imgData.w / ar.right - x) * cpp,
+                memcpy(saved + (i * imgData.w + x) * cpp,
                        imgData.pixels + ((y + i) * imgData.w + x) * cpp, (imgData.w / ar.right - x) * cpp);
 
 

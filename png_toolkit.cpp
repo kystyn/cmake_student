@@ -28,53 +28,6 @@ bool png_toolkit::save( const std::string &pictureName )
                           imgData.pixels, 0) != 0;
 }
 
-float png_toolkit::mseDeviation( const png_toolkit &tool,
-                              Error &err, int &diffPix, filter::base::area const &ar ) const
-{
-    float res = 0;
-    diffPix = 0;
-
-    if (imgData.w != tool.imgData.w ||
-        imgData.h != tool.imgData.h) {
-        err = Error::WrongSize;
-        return -1;
-    }
-
-    auto sub = []( stbi_uc *v1, stbi_uc *v2 ) -> std::array<stbi_uc, 3> {
-        std::array<stbi_uc, 3> res;
-        for (size_t i = 0; i < 3; i++)
-            res[i] = v1[i] - v2[i];
-        return res;
-    };
-
-    auto euclNorm2 = []( std::array<stbi_uc , 3> const &v ) -> int {
-        return v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
-    };
-
-    if (tool.imgData.compPerPixel < 3 ||
-            imgData.compPerPixel < 3) {
-        err = Error::WrongFormat;
-        return -1;
-    }
-
-    auto cpp = imgData.compPerPixel;
-
-    int y = ar.top == 0 ? 0 : imgData.h / ar.top;
-    int x = ar.left == 0 ? 0 : imgData.w / ar.left;
-    int norm;
-    for (; y < imgData.h / ar.bottom; y++)
-        for (; x < (imgData.w / ar.right) * cpp; x += cpp)
-    {
-        norm = euclNorm2(sub(     imgData.pixels + y * imgData.w * cpp + x,
-                             tool.imgData.pixels + y * imgData.w * cpp + x));
-        diffPix += norm != 0;
-        res += norm / float(imgData.w * imgData.h);
-    }
-
-    err = Error::Ok;
-    return res;
-}
-
 image_data png_toolkit::getPixelData( void ) const
 {
     return imgData;

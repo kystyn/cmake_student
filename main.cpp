@@ -15,20 +15,26 @@ int main( int argc, char *argv[] )
         png_toolkit studTool;
 
         if (!studTool.load(argv[2]))
+        {
             std::cout << "Bad file name\n";
+            return 0;
+        }
         filter::red r("Red");
         filter::threshold t("Threshold");
         filter::base::area a;
         a.top = 0;
         a.left = 0;
-        a.bottom = 4;
-        a.right = 4;
+        a.bottom = 1;
+        a.right = 1;
 
         auto f = filter::base::filters.find(argv[1]);
         if (f != filter::base::filters.end())
             studTool.applyFilter(*(f->second), a);
         else
+        {
             std::cout << "Bad filter name\n";
+            return 0;
+        }
 
         if (!studTool.save(argv[3]))
             std::cout << "Could not save picture\n";

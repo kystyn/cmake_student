@@ -30,7 +30,7 @@ public:
             int i = 0;
             for (int y = yStart; y <= yEnd; y++)
                 for (int x = xStart; x <= xEnd; x++)
-                    indices[i++] = y * imgData.w * cpp + x + channel;
+                    indices[i++] = (y * imgData.w + x) * cpp  + channel;
 
             std::sort(indices.begin(),
                       indices.begin() + (yEnd - yStart + 1) * (xEnd - xStart + 1),
@@ -47,8 +47,8 @@ public:
             int y = ar.top == 0 ? 0 : imgData.h / ar.top;
             int x = ar.left == 0 ? 0 : imgData.w / ar.left;
             for (; y < imgData.h / ar.bottom; y++)
-                for (; x < (imgData.w / ar.right) * cpp; x += cpp)
-                    for (int c = 0; c < cpp; c++)
+                for (; x < imgData.w / ar.right; x++)
+                    for (int c = 0; c < 3; c++)
                         applyMedian(x, y, c);
         }
     }

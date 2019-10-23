@@ -1,11 +1,18 @@
 #include <iostream>
+#include <fstream>
 #include "png_toolkit.h"
 #include "red_filter.h"
 #include "threshold.h"
 
+std::istream & operator>>( std::istream &is, filter::base::area &ar )
+{
+    is >> ar.top >> ar.left >> ar.bottom >> ar.right;
+    return is;
+}
+
 int main( int argc, char *argv[] )
 {
-    // toolkit filter_name base_pic_name student_pic_name
+    // toolkit config base_pic_name student_pic_name
     // toolkit near test images!
     try
     {
@@ -21,23 +28,29 @@ int main( int argc, char *argv[] )
         }
         filter::red r("Red");
         filter::threshold t("Threshold");
-        filter::base::area a;
 
-        a.top = 2;
-        a.left = 0;
-        a.bottom = 1;
-        a.right = 1;
-        studTool.applyFilter(r, a);
+        std::ifstream ifs(argv[1]);
+        if (!ifs)
+            throw  "Bad file name";
 
-        a.top = 0;
-        a.left = 0;
-        a.bottom = 2;
-        a.right = 2;
-        studTool.applyFilter(t, a);
+        studTool.load(argv[2]);
+        while (ifs)
+        {
+            std::string filterName;
+            filter::base::area ar;
+            ifs >> filterName >> ar;
 
+            auto f = filter::base::filters.find(filterName);
+            if (f != filter::base::filters.end())
+                studTool.applyFilter(*(f->second), ar);
+            else
+                throw "Bad filter";
+        }
 
         if (!studTool.save(argv[3]))
-            std::cout << "Could not save picture\n";
+            throw "Could not save picture";
+
+        std::cout << "OK\n";
     }
     catch (const char *str)
     {

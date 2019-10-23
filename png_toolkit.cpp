@@ -4,11 +4,6 @@
 #include "stb_image_write.h"
 #include "png_toolkit.h"
 
-std::map<std::string, png_toolkit::Filter> png_toolkit::filters =
-{
-  {"fillHalfRed", Filter::FILL_HALF_RED}
-};
-
 png_toolkit::png_toolkit()
 {
 }
@@ -33,9 +28,9 @@ bool png_toolkit::save( const std::string &pictureName )
 }
 
 float png_toolkit::mseDeviation( const png_toolkit &tool,
-                              Error &err, int &diffPix ) const
+                              Error &err, int &diffPix, filter::base::area const &ar ) const
 {
-    int res = 0;
+    float res = 0;
     diffPix = 0;
 
     if (imgData.w != tool.imgData.w ||
@@ -61,16 +56,22 @@ float png_toolkit::mseDeviation( const png_toolkit &tool,
         return -1;
     }
 
-    for (int i = 0;
-         i < imgData.w * imgData.h * imgData.compPerPixel;
-         i += imgData.compPerPixel)
+    auto cpp = imgData.compPerPixel;
+
+    int y = ar.top == 0 ? 0 : imgData.h / ar.top;
+    int x = ar.left == 0 ? 0 : imgData.w / ar.left;
+    int norm;
+    for (; y < imgData.h / ar.bottom; y++)
+        for (; x < (imgData.w / ar.right) * cpp; x += cpp)
     {
-        diffPix += euclNorm2(sub(imgData.pixels + i, tool.imgData.pixels + i)) != 0;
-        res += euclNorm2(sub(imgData.pixels + i, tool.imgData.pixels + i));
+        norm = euclNorm2(sub(     imgData.pixels + y * imgData.w * cpp + x,
+                             tool.imgData.pixels + y * imgData.w * cpp + x));
+        diffPix += norm != 0;
+        res += norm / float(imgData.w * imgData.h);
     }
 
     err = Error::Ok;
-    return res / float(imgData.w * imgData.h);
+    return res;
 }
 
 image_data png_toolkit::getPixelData( void ) const
@@ -78,25 +79,8 @@ image_data png_toolkit::getPixelData( void ) const
     return imgData;
 }
 
-void png_toolkit::applyFilter( Filter f )
+void png_toolkit::applyFilter( filter::base &f, filter::base::area const &ar )
 {
-    switch (f) {
-    case Filter::FILL_HALF_RED:
-        fillHalfRed();
-        break;
-    }
+    f(imgData, ar);
 }
 
-void png_toolkit::fillHalfRed()
-{
-    // alias
-    auto cpp = imgData.compPerPixel;
-    if (imgData.compPerPixel == 4 || imgData.compPerPixel == 3)
-        for (int y = imgData.h / 2; y < imgData.h; y++)
-            for (int x = 0; x < imgData.w * cpp; x += cpp)
-            {
-                imgData.pixels[y * imgData.w * cpp + x + 0] = 255;
-                imgData.pixels[y * imgData.w * cpp + x + 1] = 0;
-                imgData.pixels[y * imgData.w * cpp   + x + 2] = 0;
-            }
-}

@@ -26,7 +26,8 @@ public:
                 throw "No memory";
 
             memcpy(saved, imgData.pixels, imgData.w * imgData.h * cpp);
-            preprocess({saved, imgData.w, imgData.h, imgData.compPerPixel});
+            ///preprocess({saved, imgData.w, imgData.h, imgData.compPerPixel});
+            preprocess(imgData);
 
             // pixel - center pixel
             auto applyMedian =
@@ -55,12 +56,13 @@ public:
             };
 
 
-            for (; y < imgData.h / ar.bottom; y++) {
+            ///
+             /*for (; y < imgData.h / ar.bottom; y++) {
                 x = ar.left == 0 ? 0 : imgData.w / ar.left;
                 for (; x < imgData.w / ar.right; x++)
                     for (int c = 0; c < 3; c++)
                         applyMedian(x, y, c);
-            }
+            }*/
 
             delete []saved;
         }

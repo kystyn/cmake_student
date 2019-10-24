@@ -42,6 +42,7 @@ int main( int argc, char *argv[] )
             std::cout << "Bad file name\n";
             return 0;
         }
+
         filter::red r("Red");
         filter::threshold t("Threshold", brightness);
         filter::convolution<3> blur("Blur",

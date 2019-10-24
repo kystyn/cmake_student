@@ -11,6 +11,17 @@ std::istream & operator>>( std::istream &is, filter::base::area &ar )
     return is;
 }
 
+void brightness( image_data const &imgData )
+{
+    for (int i = 0;
+         i < imgData.w * imgData.h * imgData.compPerPixel;
+         i += imgData.compPerPixel)
+        for (int c = 0; c < 3; c++)
+            imgData.pixels[i + c] = stbi_uc(imgData.pixels[i + 0] * 0.3 +
+                                            imgData.pixels[i + 1] * 0.6 +
+                                            imgData.pixels[i + 2] * 0.1);
+}
+
 int main( int argc, char *argv[] )
 {
     // toolkit config base_pic_name student_pic_name
@@ -28,19 +39,19 @@ int main( int argc, char *argv[] )
             return 0;
         }
         filter::red r("Red");
-        filter::threshold t("Threshold");
+        filter::threshold t("Threshold", brightness);
         filter::convolution<3> blur("Blur",
             std::array<std::array<double, 3>, 3>{
                 std::array<double, 3>{1.0, 1.0, 1.0},
                 {1.0, 1.0, 1.0},
                 {1.0, 1.0, 1.0}
-            });
+            }, brightness);
         filter::convolution<3> border("Border",
             std::array<std::array<double, 3>, 3>{
                 std::array<double, 3>{-1.0, -1.0, -1.0},
                 {-1.0, 9.0, -1.0},
                 {-1.0, -1.0, -1.0}
-            });
+            }, brightness);
 
 
         std::ifstream ifs(argv[1]);
@@ -57,8 +68,8 @@ int main( int argc, char *argv[] )
             if (filterName.empty())
                 break;
 
-            auto f = filter::base::filters.find(filterName);
-            if (f != filter::base::filters.end())
+            auto f = filter::base::getFilters().find(filterName);
+            if (f != filter::base::getFilters().end())
                 studTool.applyFilter(*(f->second), ar);
             else
                 throw "Bad filter";

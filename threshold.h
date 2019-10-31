@@ -15,7 +15,7 @@ public:
     {
         // alias
         auto cpp = imgData.compPerPixel;
-        const int matrixSize = 3;
+        const int matrixSize = 5;
         std::array<int, matrixSize * matrixSize> indices;
 
         if (cpp == 4 || cpp == 3) {
@@ -65,9 +65,9 @@ public:
                 }
             };
 
-            for (; y < imgData.h / ar.bottom; y++) {
+            for (; y < imgData.h / ar.bottom; y += matrixSize / 2 * 2) {
                 x = ar.left == 0 ? 0 : imgData.w / ar.left;
-                for (; x < imgData.w / ar.right; x++)
+                for (; x < imgData.w / ar.right; x += matrixSize / 2 * 2)
                     applyMedian(x, y);
             }
 

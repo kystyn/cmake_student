@@ -21,7 +21,7 @@ class red : public base
                 int x = ar.left == 0 ? 0 : imgData.w / ar.left;
                 for (; x < imgData.w / ar.right; x++)
                 {
-                    imgData.pixels[(y * imgData.w + x) * cpp + 0] = 105;
+                    imgData.pixels[(y * imgData.w + x) * cpp + 0] = 255;
                     imgData.pixels[(y * imgData.w + x) * cpp + 1] = 0;
                     imgData.pixels[(y * imgData.w + x) * cpp + 2] = 0;
                     imgData.pixels[(y * imgData.w + x) * cpp + 3] = 255;

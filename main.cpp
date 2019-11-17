@@ -3,7 +3,7 @@
 #include "png_toolkit.h"
 #include "red_filter.h"
 #include "threshold.h"
-#include "convolution.h"
+//#include "convolution.h"
 
 std::istream & operator>>( std::istream &is, filter::base::area &ar )
 {
